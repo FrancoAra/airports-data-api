@@ -165,7 +165,7 @@ class DataLoader @Inject() (env: Environment) {
       ) =>
         Json.obj(
           "_id" -> JsNumber(id.toInt),
-          "airport_ref" -> stringOrNull(airportRef),
+          "airport_ref" -> JsNumber(airportRef.toInt),
           "airport_ident" -> stringOrNull(airportIdent),
           "length_ft" -> stringOrNull(lengthFt),
           "width_ft" -> stringOrNull(widthFt),
