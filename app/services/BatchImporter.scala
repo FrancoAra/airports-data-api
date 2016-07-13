@@ -32,15 +32,15 @@ class MongoBatchImporter @Inject() (
       foreach(_ => Logger.info("MongoDB: runways imported"))
   }
 
-  //lifecycle.addStopHook { () =>
-  //  futureCollections.flatMap { case (countries, airports, runways) =>
-  //    for {
-  //      _ <- countries.drop(false)
-  //      _ <- airports.drop(false)
-  //      _ <- runways.drop(false)
-  //    } yield Logger.info("MongoDB: collections dropped")
-  //  }
-  //}
+  lifecycle.addStopHook { () =>
+    futureCollections.flatMap { case (countries, airports, runways) =>
+      for {
+        _ <- countries.drop(false)
+        _ <- airports.drop(false)
+        _ <- runways.drop(false)
+      } yield Logger.info("MongoDB: collections dropped")
+    }
+  }
 
   def futureCollections = reactiveMongoApi.database.map { case db =>
     val countries = db.collection[JSONCollection]("countries")
