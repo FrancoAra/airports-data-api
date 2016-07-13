@@ -19,6 +19,7 @@ trait Queries {
 
   def countriesPage (page: Int): Future[JsArray]
   def airportsFrom (country: String): Future[JsArray]
+  def airportsPage (country: String, page: Int): Future[JsArray]
   def runwaysFrom (airport: Int): Future[JsArray]
   def countriesWithMostAirports: Future[JsArray]
   def countriesWithLeastAirports: Future[JsArray]
@@ -30,6 +31,7 @@ class MockQueries extends Queries {
 
   def countriesPage (page: Int): Future[JsArray] = Future(Json.arr())
   def airportsFrom (country: String): Future[JsArray] = Future(Json.arr())
+  def airportsPage (country: String, page: Int): Future[JsArray] = Future(Json.arr())
   def runwaysFrom (airport: Int): Future[JsArray] = Future(Json.arr())
   def countriesWithMostAirports: Future[JsArray] = Future(Json.arr())
   def countriesWithLeastAirports: Future[JsArray] = Future(Json.arr())
@@ -60,6 +62,15 @@ class MongoQueries @Inject() (reactiveMongoApi: ReactiveMongoApi) extends Querie
                 .find(Json.obj("iso_country" -> country))
                 .cursor[JsObject]()
                 .collect[List]()
+  } yield JsArray(result)
+
+  def airportsPage (country: String, page: Int): Future[JsArray] = for {
+    airports <- collection("airports")
+    result <- airports
+                .find(Json.obj("iso_country" -> country))
+                .options(QueryOpts((page - 1) * pageSize, pageSize))
+                .cursor[JsObject]()
+                .collect[List](pageSize)
   } yield JsArray(result)
 
   def runwaysFrom (airport: Int): Future[JsArray] = for {

@@ -23,6 +23,12 @@ class AirportsAPI @Inject() (query: Queries) extends Controller {
     }
   }
 
+  def airportsPage (country: String, page: Int) = Action.async {
+    query.airportsPage(country, page).map {
+      json => Ok(json)
+    }
+  }
+
   def runwaysFrom (airport: Int) = Action.async {
     query.runwaysFrom(airport).map {
       json => Ok(json)

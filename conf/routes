@@ -2,9 +2,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET /api/countries/most       controllers.AirportsAPI.countriesWithMostAirports
-GET /api/countries/least      controllers.AirportsAPI.countriesWithLeastAirports
-GET /api/countries/:page      controllers.AirportsAPI.countriesPage(page: Int)
-GET /api/airport/:id/runways  controllers.AirportsAPI.runwaysFrom(id: Int)
-GET /api/latitudes/most       controllers.AirportsAPI.mostCommonRunwayLatitudes
-GET /api/:country/airports    controllers.AirportsAPI.airportsFrom(country: String)
+GET /api/countries/most             controllers.AirportsAPI.countriesWithMostAirports
+GET /api/countries/least            controllers.AirportsAPI.countriesWithLeastAirports
+GET /api/countries/:page            controllers.AirportsAPI.countriesPage(page: Int)
+GET /api/airport/:id/runways        controllers.AirportsAPI.runwaysFrom(id: Int)
+GET /api/latitudes/most             controllers.AirportsAPI.mostCommonRunwayLatitudes
+GET /api/:country/airports          controllers.AirportsAPI.airportsFrom(country: String)
+GET /api/:country/airports/:page    controllers.AirportsAPI.airportsPage(country: String, page: Int)
