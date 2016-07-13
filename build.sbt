@@ -2,9 +2,11 @@ name := """airports-data"""
 
 version := "1.0-SNAPSHOT"
 
+scalaVersion := "2.11.7"
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.11.7"
+routesGenerator := InjectedRoutesGenerator
 
 libraryDependencies ++= Seq(
   jdbc,
@@ -16,3 +18,5 @@ libraryDependencies ++= Seq(
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+
+fork in run := false
