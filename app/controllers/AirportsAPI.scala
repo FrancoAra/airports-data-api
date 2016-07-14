@@ -10,8 +10,13 @@ import play.api.libs.json.Json
 import play.api.mvc._
 
 import services.Queries
+import services.MinEditDistance
+import services.CountriesDictionary
 
-class AirportsAPI @Inject() (query: Queries) extends Controller {
+class AirportsAPI @Inject() (
+  query: Queries,
+  dictionary: CountriesDictionary
+) extends Controller {
 
   val RunwaysRegex = """^\$((?:\w|-)+)""".r
   val CountryCodeRegex = """^([a-zA-Z]{2})$""".r
@@ -22,6 +27,7 @@ class AirportsAPI @Inject() (query: Queries) extends Controller {
         query.airportsPage(countryCode.toUpperCase, 1).map {
           json => Ok(Json.obj(
             "type" -> "airports",
+            "code" -> countryCode.toUpperCase,
             "data" -> json
           ))
         }
@@ -32,7 +38,15 @@ class AirportsAPI @Inject() (query: Queries) extends Controller {
             "data" -> json
           ))
         }
-      case _ => Future(Ok)
+      case _ =>
+        val countryCode = dictionary.fuzzySearch(queryString)
+        query.airportsPage(countryCode, 1).map {
+          json => Ok(Json.obj(
+            "type" -> "airports",
+            "code" -> countryCode,
+            "data" -> json
+          ))
+        }
     }
   }
 

@@ -23,24 +23,24 @@ class MongoBatchImporter @Inject() (
   lifecycle: ApplicationLifecycle
 ) extends BatchImporter {
 
-  //futureCollections.map { case (countries, airports, runways) =>
-  //  countries.bulkInsert(dataLoader.countries, ordered = false).
-  //    foreach(_ => Logger.info("MongoDB: countries imported"))
-  //  airports.bulkInsert(dataLoader.airports, ordered = false).
-  //    foreach(_ => Logger.info("MongoDB: airports imported"))
-  //  runways.bulkInsert(dataLoader.runways, ordered = false).
-  //    foreach(_ => Logger.info("MongoDB: runways imported"))
-  //}
+  futureCollections.map { case (countries, airports, runways) =>
+    countries.bulkInsert(dataLoader.countries, ordered = false).
+      foreach(_ => Logger.info("MongoDB: countries imported"))
+    airports.bulkInsert(dataLoader.airports, ordered = false).
+      foreach(_ => Logger.info("MongoDB: airports imported"))
+    runways.bulkInsert(dataLoader.runways, ordered = false).
+      foreach(_ => Logger.info("MongoDB: runways imported"))
+  }
 
-  //lifecycle.addStopHook { () =>
-  //  futureCollections.flatMap { case (countries, airports, runways) =>
-  //    for {
-  //      _ <- countries.drop(false)
-  //      _ <- airports.drop(false)
-  //      _ <- runways.drop(false)
-  //    } yield Logger.info("MongoDB: collections dropped")
-  //  }
-  //}
+  lifecycle.addStopHook { () =>
+    futureCollections.flatMap { case (countries, airports, runways) =>
+      for {
+        _ <- countries.drop(false)
+        _ <- airports.drop(false)
+        _ <- runways.drop(false)
+      } yield Logger.info("MongoDB: collections dropped")
+    }
+  }
 
   def futureCollections = reactiveMongoApi.database.map { case db =>
     val countries = db.collection[JSONCollection]("countries")

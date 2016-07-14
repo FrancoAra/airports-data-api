@@ -4,7 +4,9 @@ import services.{
   BatchImporter,
   MongoBatchImporter,
   Queries,
-  MongoQueries
+  MongoQueries,
+  CountriesDictionary,
+  MemCountriesDictionary
 }
 
 class Module extends AbstractModule {
@@ -16,5 +18,8 @@ class Module extends AbstractModule {
 
     bind(classOf[Queries])
       .to(classOf[MongoQueries])
+
+    bind(classOf[CountriesDictionary])
+      .to(classOf[MemCountriesDictionary])
   }
 }

@@ -14,7 +14,6 @@ import reactivemongo.api.QueryOpts
 import reactivemongo.play.json._
 import play.modules.reactivemongo.json.collection._
 
-@ImplementedBy(classOf[MongoBatchImporter])
 trait Queries {
 
   def countriesPage (page: Int): Future[JsArray]
@@ -25,19 +24,6 @@ trait Queries {
   def countriesWithMostAirports: Future[JsArray]
   def countriesWithLeastAirports: Future[JsArray]
   def mostCommonRunwayLatitudes: Future[JsArray]
-}
-
-@Singleton
-class MockQueries extends Queries {
-
-  def countriesPage (page: Int): Future[JsArray] = Future(Json.arr())
-  def airportsFrom (country: String): Future[JsArray] = Future(Json.arr())
-  def airportsPage (country: String, page: Int): Future[JsArray] = Future(Json.arr())
-  def runwaysFrom (airport: Int): Future[JsArray] = Future(Json.arr())
-  def runwaysFromIdent (airport: String): Future[JsArray] = Future(Json.arr())
-  def countriesWithMostAirports: Future[JsArray] = Future(Json.arr())
-  def countriesWithLeastAirports: Future[JsArray] = Future(Json.arr())
-  def mostCommonRunwayLatitudes: Future[JsArray] = Future(Json.arr())
 }
 
 @Singleton

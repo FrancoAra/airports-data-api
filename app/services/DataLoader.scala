@@ -104,7 +104,7 @@ object DataLoader {
 }
 
 @Singleton
-class DataLoader @Inject() (env: Environment) {
+class DataLoader @Inject() (env: Environment, dictionary: CountriesDictionary) {
 
   import DataLoader._
 
@@ -113,6 +113,9 @@ class DataLoader @Inject() (env: Environment) {
       case CountryRegex(id, code, name, continent, wikipediaLink, keywords) =>
         val kw = if (keywords == null) JsNull
                  else JsArray(keywords.split(", ").map(JsString(_)))
+        val kw2 = if (keywords == null) None
+                 else Some(keywords.split(",").toList)
+        dictionary.add(Country(code, name, kw2))
         Json.obj(
           "_id" -> JsNumber(id.toInt),
           "code" -> code,
