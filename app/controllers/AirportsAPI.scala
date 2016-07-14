@@ -3,6 +3,8 @@ package controllers
 
 import javax.inject.Inject
 
+import scala.concurrent.Future
+
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -10,6 +12,29 @@ import play.api.mvc._
 import services.Queries
 
 class AirportsAPI @Inject() (query: Queries) extends Controller {
+
+  val RunwaysRegex = """^\$((?:\w|-)+)""".r
+  val CountryCodeRegex = """^([a-zA-Z]{2})$""".r
+
+  def search (queryString: String) = Action.async {
+    queryString match {
+      case CountryCodeRegex(countryCode) =>
+        query.airportsPage(countryCode.toUpperCase, 1).map {
+          json => Ok(Json.obj(
+            "type" -> "airports",
+            "data" -> json
+          ))
+        }
+      case RunwaysRegex(airportIdent) =>
+        query.runwaysFromIdent(airportIdent).map {
+          json => Ok(Json.obj(
+            "type" -> "runways",
+            "data" -> json
+          ))
+        }
+      case _ => Future(Ok)
+    }
+  }
 
   def countriesPage (page: Int) = Action.async {
     query.countriesPage(page).map {

@@ -21,6 +21,7 @@ trait Queries {
   def airportsFrom (country: String): Future[JsArray]
   def airportsPage (country: String, page: Int): Future[JsArray]
   def runwaysFrom (airport: Int): Future[JsArray]
+  def runwaysFromIdent (airport: String): Future[JsArray]
   def countriesWithMostAirports: Future[JsArray]
   def countriesWithLeastAirports: Future[JsArray]
   def mostCommonRunwayLatitudes: Future[JsArray]
@@ -33,6 +34,7 @@ class MockQueries extends Queries {
   def airportsFrom (country: String): Future[JsArray] = Future(Json.arr())
   def airportsPage (country: String, page: Int): Future[JsArray] = Future(Json.arr())
   def runwaysFrom (airport: Int): Future[JsArray] = Future(Json.arr())
+  def runwaysFromIdent (airport: String): Future[JsArray] = Future(Json.arr())
   def countriesWithMostAirports: Future[JsArray] = Future(Json.arr())
   def countriesWithLeastAirports: Future[JsArray] = Future(Json.arr())
   def mostCommonRunwayLatitudes: Future[JsArray] = Future(Json.arr())
@@ -77,6 +79,14 @@ class MongoQueries @Inject() (reactiveMongoApi: ReactiveMongoApi) extends Querie
     runways <- collection("runways")
     result <- runways
                 .find(Json.obj("airport_ref" -> airport))
+                .cursor[JsObject]()
+                .collect[List]()
+  } yield JsArray(result)
+
+  def runwaysFromIdent (airport: String): Future[JsArray] = for {
+    runways <- collection("runways")
+    result <- runways
+                .find(Json.obj("airport_ident" -> airport))
                 .cursor[JsObject]()
                 .collect[List]()
   } yield JsArray(result)

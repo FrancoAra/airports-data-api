@@ -2,6 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+GET /api/search/:query              controllers.AirportsAPI.search(query: String)
 GET /api/countries/most             controllers.AirportsAPI.countriesWithMostAirports
 GET /api/countries/least            controllers.AirportsAPI.countriesWithLeastAirports
 GET /api/countries/:page            controllers.AirportsAPI.countriesPage(page: Int)
