@@ -1,3 +1,7 @@
+/**
+  * @author Francisco Miguel Aramburo Torres - atfm05@gmail.com
+  */
+
 package services
 
 import javax.inject._
@@ -10,18 +14,27 @@ import play.api.inject.ApplicationLifecycle
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.collection.JSONCollection
 
-@ImplementedBy(classOf[MongoBatchImporter])
 trait BatchImporter
 
 @Singleton
 class NoImport extends BatchImporter
 
+/** Component eagerly loaded which uses [[services.DataLoader]] to import the data
+  * at conf directory to MongoDB. Also cleans the database at shutdown.
+  *
+  * @param dataLoader component to read the streams of data.
+  * @param reactiveMongoApi component to access mongodb.
+  * @param lifecycle component provided by play framework to add the stop hook.
+  */
 @Singleton
 class MongoBatchImporter @Inject() (
   dataLoader: DataLoader,
   reactiveMongoApi: ReactiveMongoApi,
   lifecycle: ApplicationLifecycle
 ) extends BatchImporter {
+
+  // This lines of code are executed at the starting phase of play framework
+  // because the component is eagerly loaded and its constructor is executed.
 
   futureCollections.map { case (countries, airports, runways) =>
     countries.bulkInsert(dataLoader.countries, ordered = false).
@@ -42,7 +55,7 @@ class MongoBatchImporter @Inject() (
     }
   }
 
-  def futureCollections = reactiveMongoApi.database.map { case db =>
+  private def futureCollections = reactiveMongoApi.database.map { case db =>
     val countries = db.collection[JSONCollection]("countries")
     val airports = db.collection[JSONCollection]("airports")
     val runways = db.collection[JSONCollection]("runways")

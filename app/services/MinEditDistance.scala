@@ -1,7 +1,21 @@
+/**
+  * @author Francisco Miguel Aramburo Torres - atfm05@gmail.com
+  */
+
 package services
 
+/** Component which computes the min edit distance between two strings using a
+  * dynamic programming algorithm.
+  */
 class MinEditDistance {
 
+  /** Sets the initial recursion for the computation of the min edit distance
+    * between string x and y.
+    *
+    * @param x string to be compared.
+    * @param y string to be compared.
+    * @return the integer value of the min edit distance.
+    */
   def compute (x: String, y: String): Int = {
     val a = Array("#") ++ x.split("")
     val b = Array("#") ++ y.split("")
@@ -11,6 +25,15 @@ class MinEditDistance {
     minEditDistance(a, b, t, 1, 1)
   }
 
+  /** Recursion for the min edit distance algorithm.
+    *
+    * @param a array of charactes with a null character prepended.
+    * @param b array of charactes with a null character prepended.
+    * @param t matrix to save previous results of the dynamic programming algorithm.
+    * @param x coord currently computing on, of the t matrix.
+    * @param y coord currently computing on, of the t matrix.
+    * @return the integer value of the min edit distance adter reaching base case.
+    */
   def minEditDistance (a: Array[String], b: Array[String], t: Array[Array[Int]], x: Int, y: Int): Int = {
     val nextX = if (y == b.length - 1) x + 1
                 else x

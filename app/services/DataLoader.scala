@@ -1,3 +1,7 @@
+/**
+  * @author Francisco Miguel Aramburo Torres - atfm05@gmail.com
+  */
+
 package services
 
 import javax.inject._
@@ -6,8 +10,10 @@ import scala.io.Source
 import play.api.Environment
 import play.api.libs.json._
 
+/** Object to hold helper regular expresions. */
 object DataLoader {
 
+  /** Regular expresion for parsing the countries.csv lines. */
   val CountryRegex =
     /* id */
     ( """(\d+),"""
@@ -22,6 +28,7 @@ object DataLoader {
     /* keywords */
     + """(?:"(.+?)")?""").r
 
+  /** Regular expresion for parsing the airports.csv lines. */
   val AirportRegex =
     /* id */
     ( """(\d+)(?=,),"""
@@ -60,6 +67,7 @@ object DataLoader {
     /* keywords */
     + """(?:"(.+?)")?""").r
 
+  /** Regular expresion for parsing the runways.csv lines. */
   val RunwaysRegex =
     /* id */
     ( """(\d+)(?=,),"""
@@ -103,11 +111,21 @@ object DataLoader {
     + """(?:(.+?))?""").r
 }
 
+/** Component which methods read the data csv files in the conf directory, and returns
+  * a stream of json objects with each line data.
+  *
+  * @param env given by play framework to access the conf directory.
+  * @param dictionary component to save the countries in memory for fuzzy searches.
+  */
 @Singleton
 class DataLoader @Inject() (env: Environment, dictionary: CountriesDictionary) {
 
   import DataLoader._
 
+  /** Reads countries.csv and parses each line to json objects.
+    *
+    * @return a stream of json objects containing the data.
+    */
   def countries: Stream[JsObject] =
     readCSV("conf/countries.csv").map {
       case CountryRegex(id, code, name, continent, wikipediaLink, keywords) =>
@@ -126,6 +144,10 @@ class DataLoader @Inject() (env: Environment, dictionary: CountriesDictionary) {
         )
     }
 
+  /** Reads airports.csv and parses each line to json objects.
+    *
+    * @return a stream of json objects containing the data.
+    */
   def airports: Stream[JsObject] =
     readCSV("conf/airports.csv").map {
       case AirportRegex(
@@ -158,6 +180,10 @@ class DataLoader @Inject() (env: Environment, dictionary: CountriesDictionary) {
         )
     }
 
+  /** Reads runways.csv and parses each line to json objects.
+    *
+    * @return a stream of json objects containing the data.
+    */
   def runways: Stream[JsObject] =
     readCSV("conf/runways.csv").map {
       case RunwaysRegex(
