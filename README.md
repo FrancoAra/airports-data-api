@@ -8,6 +8,11 @@ GET /api/search/<query>
 
 If `<query>` is a runway identity prepended with a `$` it returns the runway data.
 
+If `<query>` is a 2 character string it returns the first page of airports (10) from
+country with country_code equal to the query string.
+
+Else it does a fuzzy search over the country names and keywords.
+
 ```
 GET /api/countries/most
 ```
